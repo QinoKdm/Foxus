@@ -57,6 +57,7 @@ val selectedIcons = listOf(Icons.Rounded.Home, Icons.Rounded.CheckCircle, Icons.
 val unSelectedIcons = listOf(Icons.Outlined.Home, Icons.Outlined.CheckCircle, Icons.Outlined.AccountCircle)
 
 
+
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {

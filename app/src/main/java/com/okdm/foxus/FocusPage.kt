@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.launch
 
 // 计时器数据模型
 data class TimerCard(
@@ -141,14 +143,30 @@ fun AddFocusTimerFAB(onAdd: () -> Unit) {
             containerColor = MaterialTheme.colorScheme.primary
         )
     }
-
 }
 
 // 主页面
 @Composable
 fun FocusPage() {
-    val timerCards = remember { mutableStateListOf<TimerCard>() }
-    var nextId by remember { mutableStateOf(1) }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    val timerCardsFlow = TimerDataStore.getTimerCardsFlow(context)
+    val nextIdFlow = TimerDataStore.getNextIdFlow(context)
+
+    val timerCards by timerCardsFlow.collectAsState(initial = emptyList())
+    val nextId by nextIdFlow.collectAsState(initial = 1)
+
+    val mutableTimerCards = remember { mutableStateListOf(*timerCards.toTypedArray()) }
+    var nextIdState by remember { mutableStateOf(nextId) }
+
+    // 当 timerCards 或 nextId 发生变化时，将数据存储到 DataStore 中
+    LaunchedEffect(mutableTimerCards, nextIdState) {
+        scope.launch {
+            TimerDataStore.saveTimerCards(context, mutableTimerCards)
+            TimerDataStore.saveNextId(context, nextIdState)
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         // 空状态处理
@@ -186,7 +204,7 @@ fun FocusPage() {
                         onStart = { /* 启动专注计时 */ },
                         onEdit = { /* 编辑计时器 */ },
                         onDelete = {
-                            timerCards.remove(card)
+                            mutableTimerCards.remove(card)
                         }
                     )
                 }
@@ -195,9 +213,9 @@ fun FocusPage() {
 
         // 添加 FAB 按钮
         AddFocusTimerFAB {
-            timerCards.add(
+            mutableTimerCards.add(
                 TimerCard(
-                    id = nextId++,
+                    id = nextIdState++,
                     name = "Timer"
                 )
             )
