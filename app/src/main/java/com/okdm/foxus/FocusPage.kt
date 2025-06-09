@@ -155,18 +155,8 @@ fun FocusPage() {
     val nextIdFlow = TimerDataStore.getNextIdFlow(context)
 
     val timerCards by timerCardsFlow.collectAsState(initial = emptyList())
-    val nextId by nextIdFlow.collectAsState(initial = 1)
-
-    val mutableTimerCards = remember { mutableStateListOf(*timerCards.toTypedArray()) }
-    var nextIdState by remember { mutableStateOf(nextId) }
-
-    // 当 timerCards 或 nextId 发生变化时，将数据存储到 DataStore 中
-    LaunchedEffect(mutableTimerCards, nextIdState) {
-        scope.launch {
-            TimerDataStore.saveTimerCards(context, mutableTimerCards)
-            TimerDataStore.saveNextId(context, nextIdState)
-        }
-    }
+    val initialNextId by nextIdFlow.collectAsState(initial = 1)
+    var nextId by remember { mutableStateOf(initialNextId) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         // 空状态处理
@@ -204,7 +194,11 @@ fun FocusPage() {
                         onStart = { /* 启动专注计时 */ },
                         onEdit = { /* 编辑计时器 */ },
                         onDelete = {
-                            mutableTimerCards.remove(card)
+                            scope.launch {
+                                val newTimerCards = timerCards.toMutableList()
+                                newTimerCards.remove(card)
+                                TimerDataStore.saveTimerCards(context, newTimerCards)
+                            }
                         }
                     )
                 }
@@ -213,12 +207,16 @@ fun FocusPage() {
 
         // 添加 FAB 按钮
         AddFocusTimerFAB {
-            mutableTimerCards.add(
-                TimerCard(
-                    id = nextIdState++,
+            scope.launch {
+                val newTimerCard = TimerCard(
+                    id = nextId++,
                     name = "Timer"
                 )
-            )
+                val newTimerCards = timerCards.toMutableList()
+                newTimerCards.add(newTimerCard)
+                TimerDataStore.saveTimerCards(context, newTimerCards)
+                TimerDataStore.saveNextId(context, nextId)
+            }
         }
     }
 }
