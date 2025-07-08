@@ -19,10 +19,11 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 // 计时器数据模型
 data class FOCUS_TIMER(
-    val id: String,
+    val id: String = UUID.randomUUID().toString(),
     val name: String,
     val focusTime: Int = 25,
     val restTime: Int = 5
