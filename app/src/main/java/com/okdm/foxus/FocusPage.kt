@@ -21,8 +21,8 @@ import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
 
 // 计时器数据模型
-data class TimerCard(
-    val id: Int,
+data class FOCUS_TIMER(
+    val id: String,
     val name: String,
     val focusTime: Int = 25,
     val restTime: Int = 5
@@ -31,7 +31,7 @@ data class TimerCard(
 // 计时器卡片组件
 @Composable
 fun FocusTimerCard(
-    card: TimerCard,
+    card: FOCUS_TIMER,
     onStart: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit
@@ -123,9 +123,37 @@ fun FocusTimerCard(
     }
 }
 
+@Composable
+fun NoFocusTimerCard(){
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                imageVector = Icons.Rounded.Add,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(64.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "暂无计时器",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+            Text(
+                text = "点击下方按钮添加",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
+    }
+}
+
 // 添加计时器的 FAB 组件
 @Composable
-fun AddFocusTimerFAB(onAdd: () -> Unit) {
+fun AddFocusTimerCardFAB(onAdd: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()){
         ExtendedFloatingActionButton(
             onClick = onAdd,
@@ -148,75 +176,12 @@ fun AddFocusTimerFAB(onAdd: () -> Unit) {
 // 主页面
 @Composable
 fun FocusPage() {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-
-    val timerCardsFlow = TimerDataStore.getTimerCardsFlow(context)
-    val nextIdFlow = TimerDataStore.getNextIdFlow(context)
-
-    val timerCards by timerCardsFlow.collectAsState(initial = emptyList())
-    val initialNextId by nextIdFlow.collectAsState(initial = 1)
-    var nextId by remember { mutableStateOf(initialNextId) }
-
     Box(modifier = Modifier.fillMaxSize()) {
-        // 空状态处理
-        if (timerCards.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Icons.Rounded.Add,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.size(64.dp)
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "暂无计时器",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                    Text(
-                        text = "点击下方按钮添加",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                }
-            }
-        } else {
-            // 卡片列表
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(timerCards, key = { it.id }) { card ->
-                    FocusTimerCard(
-                        card = card,
-                        onStart = { /* 启动专注计时 */ },
-                        onEdit = { /* 编辑计时器 */ },
-                        onDelete = {
-                            scope.launch {
-                                val newTimerCards = timerCards.toMutableList()
-                                newTimerCards.remove(card)
-                                TimerDataStore.saveTimerCards(context, newTimerCards)
-                            }
-                        }
-                    )
-                }
-            }
-        }
+
 
         // 添加 FAB 按钮
-        AddFocusTimerFAB {
-            scope.launch {
-                val newTimerCard = TimerCard(
-                    id = nextId++,
-                    name = "Timer"
-                )
-                val newTimerCards = timerCards.toMutableList()
-                newTimerCards.add(newTimerCard)
-                TimerDataStore.saveTimerCards(context, newTimerCards)
-                TimerDataStore.saveNextId(context, nextId)
-            }
+        AddFocusTimerCardFAB {
+
         }
     }
 }
@@ -224,5 +189,5 @@ fun FocusPage() {
 // 专注计时页面（占位）
 @Composable
 fun Focusing() {
-    // 实现专注计时的 UI 和逻辑
+
 }
