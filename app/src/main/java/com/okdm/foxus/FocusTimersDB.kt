@@ -46,7 +46,7 @@ abstract class FocusTimersDatabase: RoomDatabase(){
             }
         }
         else{
-            FocusTimersDatabase!!
+            DB!!
         }
     }
 

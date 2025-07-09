@@ -178,8 +178,8 @@ fun AddFocusTimerCardFAB(onAdd: () -> Unit) {
 // 主页面
 @Composable
 fun FocusPage() {
-
-    val db = FocusTimersDatabase.getDB()
+    val context = LocalContext.current
+    val FocusTimersDao = FocusTimersDatabase.getDB(context).getFocusTimerDao()
 
     Box(modifier = Modifier.fillMaxSize()) {
 
