@@ -52,7 +52,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-val items = listOf("专注", "任务", "我")
+val items = listOf("Focus", "Tasks", "Profile")
 val selectedIcons = listOf(Icons.Rounded.Home, Icons.Rounded.CheckCircle, Icons.Rounded.AccountCircle)
 val unSelectedIcons = listOf(Icons.Outlined.Home, Icons.Outlined.CheckCircle, Icons.Outlined.AccountCircle)
 

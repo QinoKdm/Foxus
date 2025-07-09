@@ -1,5 +1,6 @@
 package com.okdm.foxus
 
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,22 +18,20 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.coroutines.launch
 import java.util.UUID
-
-// 计时器数据模型
-data class FOCUS_TIMER(
-    val id: String = UUID.randomUUID().toString(),
-    val name: String,
-    val focusTime: Int = 25,
-    val restTime: Int = 5
-)
 
 // 计时器卡片组件
 @Composable
 fun FocusTimerCard(
-    card: FOCUS_TIMER,
     onStart: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit
@@ -55,10 +54,10 @@ fun FocusTimerCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = card.name,
-                    fontSize = 27.sp,
+                    text = "TEMP",
+                    fontSize = 29.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(5.dp)
+                    modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
                 )
 
                 OutlinedCard(
@@ -68,11 +67,13 @@ fun FocusTimerCard(
                         color = MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    Text(
-                        text = "Focus Time: ${card.focusTime} min",
-                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp),
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                    Icon(
+                        imageVector = Icons.Rounded.KeyboardArrowDown,
+                        contentDescription = "expand timer card",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .width(width = 35.dp)
+                            .height(height = 35.dp)
                     )
                 }
             }
@@ -177,10 +178,17 @@ fun AddFocusTimerCardFAB(onAdd: () -> Unit) {
 // 主页面
 @Composable
 fun FocusPage() {
+
+    val db = FocusTimersDatabase.getDB()
+
     Box(modifier = Modifier.fillMaxSize()) {
 
+        FocusTimerCard(
+            onStart = {},
+            onEdit = {},
+            onDelete = {}
+        )
 
-        // 添加 FAB 按钮
         AddFocusTimerCardFAB {
 
         }
