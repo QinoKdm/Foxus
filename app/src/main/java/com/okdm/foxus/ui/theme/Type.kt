@@ -80,3 +80,22 @@ val RobotoFlexVariableEsp_QuickFocus_min_ = FontFamily(
         )
     )
 )
+
+@OptIn(ExperimentalTextApi::class)
+val RobotoFlexVariableEsp_Focusing = FontFamily(
+    Font(
+        resId = R.font.roboto_flex_variable, // 替换成你的字体文件名
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(900), // 示例：设置默认字重
+            FontVariation.width(25f),// 示例：设置默认宽度
+            FontVariation.Setting("xqpr", 90f),
+            FontVariation.Setting("YOPQ", 25f),
+            FontVariation.Setting("XTRA", 400f),
+            FontVariation.Setting("YTUC", 760f),
+            FontVariation.Setting("YTLC", 416f),
+            FontVariation.Setting("YTAS", 750f),
+            FontVariation.Setting("YTDE", -305f),
+            FontVariation.Setting("opsz", 8f)
+        )
+    )
+)
