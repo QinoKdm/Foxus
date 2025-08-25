@@ -192,7 +192,7 @@ fun MainWithScaffold(
                 label = "bottomBarTransition"
             ) {
 
-                index ->
+                    index ->
                 SharedTransitionLayout {
                     when (index) {
                         0 -> FocusPage(

@@ -75,7 +75,8 @@ import java.nio.file.WatchEvent
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
-import androidx.compose.animation.sharedElement
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 
 // 主界面
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -102,88 +103,89 @@ fun FocusPage(
         )
     )
     val sharedKey = "Focusing"
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Card(
+    with(sharedTransitionScope){
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(quickFocusCardHeight)
-                .clickable { onStartClick() }
-                .sharedElement(
-                    rememberSharedContentState(key = sharedKey),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                ),
-            shape = RoundedCornerShape(30.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            )
-        ) {
-            Column(
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Card(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Quick Focus",
-                    style = TextStyle(
-                        fontFamily = RobotoFlexVariableEsp_QuickFocusTitle,
-                        fontSize = 25.sp
-                    )
+                    .fillMaxWidth()
+                    .height(quickFocusCardHeight)
+                    .clickable { onStartClick() }
+                    .sharedElement(
+                        rememberSharedContentState(key = sharedKey),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                    ),
+                shape = RoundedCornerShape(30.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primary
                 )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Row(modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.Bottom
-                ){
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
-                        text = "25",
+                        text = "Quick Focus",
                         style = TextStyle(
-                            fontFamily = RobotoFlexVariableEsp_QuickFocusTime,
-                            fontSize = 80.sp
+                            fontFamily = RobotoFlexVariableEsp_QuickFocusTitle,
+                            fontSize = 25.sp
                         )
                     )
-                    Text(
-                        text = "min",
-                        style = TextStyle(
-                            fontFamily = RobotoFlexVariableEsp_QuickFocus_min_,
-                            fontSize = 40.sp
-                        ),
-                        modifier = Modifier.padding(vertical = 10.dp)
-                    )
-                }
 
-                Spacer(modifier = Modifier.height(spacerBetweenQuickFocusTimeAndButtons))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                Row(modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.Bottom,
-                ){
-                    Button(
-                        onClick = { isExpanded = !isExpanded },
-                        shape = RoundedCornerShape(28.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.onPrimary,
-                            contentColor = MaterialTheme.colorScheme.primary
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                    ) {
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.Bottom
+                    ){
                         Text(
-                            text = if(isExpanded) "Pause" else "Start Now",
+                            text = "25",
                             style = TextStyle(
-                                fontFamily = RobotoFlexVariableEsp_QuickFocusTitle,
-                                fontSize = 20.sp
+                                fontFamily = RobotoFlexVariableEsp_QuickFocusTime,
+                                fontSize = 80.sp
                             )
                         )
+                        Text(
+                            text = "min",
+                            style = TextStyle(
+                                fontFamily = RobotoFlexVariableEsp_QuickFocus_min_,
+                                fontSize = 40.sp
+                            ),
+                            modifier = Modifier.padding(vertical = 10.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(spacerBetweenQuickFocusTimeAndButtons))
+
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.Bottom,
+                    ){
+                        Button(
+                            onClick = { isExpanded = !isExpanded },
+                            shape = RoundedCornerShape(28.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                contentColor = MaterialTheme.colorScheme.primary
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                        ) {
+                            Text(
+                                text = if(isExpanded) "Pause" else "Start Now",
+                                style = TextStyle(
+                                    fontFamily = RobotoFlexVariableEsp_QuickFocusTitle,
+                                    fontSize = 20.sp
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -206,19 +208,20 @@ fun Focusing(
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.onPrimary)
-            .sharedElement(
-                rememberSharedContentState(key = sharedKey),
-                animatedVisibilityScope = animatedVisibilityScope
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Text(
-            text = "Focusing",
-            style = TextStyle(
+    with(sharedTransitionScope){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.onPrimary)
+                .sharedElement(
+                    rememberSharedContentState(key = sharedKey),
+                    animatedVisibilityScope = animatedVisibilityScope
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text(
+                text = "Focusing",
+                style = TextStyle(
                 fontFamily = RobotoFlexVariableEsp_Focusing,
                 fontSize = 70.sp,
             ),
@@ -227,37 +230,38 @@ fun Focusing(
                 .padding(horizontal = 40.dp, vertical = 80.dp),
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(50.dp))
-        CircularProgressIndicator(
-            progress = { animatedProgress },
-            modifier = Modifier
-                .padding(horizontal = 40.dp)
-                .height(200.dp)
-                .width(200.dp),
-            strokeWidth = 10.dp,
-            strokeCap = StrokeCap.Round
-        )
-        Spacer(Modifier.requiredHeight(30.dp))
-        Text("Set progress:")
-        Slider(
-            modifier = Modifier.width(300.dp),
-            value = progress,
-            valueRange = 0f..1f,
-            onValueChange = { progress = it },
-        )
-        LinearWavyProgressIndicator(
-            progress = { animatedProgress },
-            modifier = Modifier
-                .padding(40.dp)
-                .height(20.dp)
-                .fillMaxWidth(),
-            stroke = Stroke(width = 30f, cap = StrokeCap.Round),
-            trackStroke = Stroke(width = 30f, cap = StrokeCap.Round),
-            wavelength = 45.dp
-        )
-
-
+            )
+            Spacer(modifier = Modifier.height(50.dp))
+            CircularProgressIndicator(
+                progress = { animatedProgress },
+                modifier = Modifier
+                    .padding(horizontal = 40.dp)
+                    .height(200.dp)
+                    .width(200.dp),
+                strokeWidth = 10.dp,
+                strokeCap = StrokeCap.Round,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(Modifier.requiredHeight(30.dp))
+            Text("Set progress:")
+            Slider(
+                modifier = Modifier.width(300.dp),
+                value = progress,
+                valueRange = 0f..1f,
+                onValueChange = { progress = it },
+            )
+            LinearWavyProgressIndicator(
+                progress = { animatedProgress },
+                modifier = Modifier
+                    .padding(40.dp)
+                    .height(20.dp)
+                    .fillMaxWidth(),
+                stroke = Stroke(width = 30f, cap = StrokeCap.Round),
+                trackStroke = Stroke(width = 30f, cap = StrokeCap.Round),
+                wavelength = 45.dp,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }
 
